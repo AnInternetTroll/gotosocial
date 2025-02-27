@@ -631,6 +631,7 @@ func (c *Converter) AppToAPIAppSensitive(ctx context.Context, a *gtsmodel.Applic
 		ClientID:     a.ClientID,
 		ClientSecret: a.ClientSecret,
 		VapidKey:     vapidKeyPair.Public,
+		Scopes:       strings.Split(a.Scopes, " "),
 	}, nil
 }
 

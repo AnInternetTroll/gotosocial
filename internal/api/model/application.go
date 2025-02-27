@@ -42,6 +42,8 @@ type Application struct {
 	ClientSecret string `json:"client_secret,omitempty"`
 	// Push API key for this application.
 	VapidKey string `json:"vapid_key,omitempty"`
+	// OAuth scopes for this application.
+	Scopes []string `json:"scopes,omitempty"`
 }
 
 // ApplicationCreateRequest models app create parameters.
