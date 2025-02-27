@@ -26,8 +26,8 @@ import (
 )
 
 const (
-	BasePath       = "/v1/tokens"
-	BasePathWithID = BasePath + "/:" + apiutil.IDKey
+	BasePath            = "/v1/tokens"
+	BasePathWithID      = BasePath + "/:" + apiutil.IDKey
 	InvalidateTokenPath = BasePathWithID + "/invalidate"
 )
 

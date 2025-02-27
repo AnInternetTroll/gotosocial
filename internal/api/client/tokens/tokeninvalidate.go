@@ -21,8 +21,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
 	apiutil "github.com/superseriousbusiness/gotosocial/internal/api/util"
+	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
 )
 
 // TokenInvalidatePOSTHandler swagger:operation POST /api/v1/tokens/{id}/invalidate tokenInvalidatePost
