@@ -626,7 +626,8 @@ func (c *Converter) AppToAPIAppSensitive(ctx context.Context, a *gtsmodel.Applic
 		ID:           a.ID,
 		Name:         a.Name,
 		Website:      a.Website,
-		RedirectURI:  a.RedirectURI,
+		RedirectURI:  strings.Join(a.RedirectURIs, "\n"),
+		RedirectURIs: a.RedirectURIs,
 		ClientID:     a.ClientID,
 		ClientSecret: a.ClientSecret,
 		VapidKey:     vapidKeyPair.Public,
@@ -3064,5 +3065,41 @@ func (c *Converter) WebPushSubscriptionToAPIWebPushSubscription(
 		},
 		Policy:   webPushNotificationPolicyToAPIWebPushNotificationPolicy(subscription.Policy),
 		Standard: true,
+	}, nil
+}
+
+func (c *Converter) TokenToAPITokenInfo(
+	ctx context.Context,
+	token *gtsmodel.Token,
+) (*apimodel.TokenInfo, error) {
+	createdAt, err := id.TimeFromULID(token.ID)
+	if err != nil {
+		err := gtserror.Newf("error converting token ID to createdAt: %w", err)
+		return nil, err
+	}
+
+	var lastUsed string
+	if !token.LastUsed.IsZero() {
+		lastUsed = util.FormatISO8601(token.LastUsed)
+	}
+
+	app, err := c.state.DB.GetApplicationByClientID(ctx, token.ClientID)
+	if err != nil {
+		err := gtserror.Newf("db error getting application for clientID %s: %w", token.ClientID, err)
+		return nil, err
+	}
+
+	apiApp, err := c.AppToAPIAppPublic(ctx, app)
+	if err != nil {
+		err := gtserror.Newf("error converting token app: %w", err)
+		return nil, err
+	}
+
+	return &apimodel.TokenInfo{
+		ID:          token.ID,
+		CreatedAt:   util.FormatISO8601(createdAt),
+		LastUsed:    lastUsed,
+		Scope:       token.Scope,
+		Application: apiApp,
 	}, nil
 }

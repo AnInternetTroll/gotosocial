@@ -369,18 +369,14 @@ func (a *adminDB) CreateInstanceApplication(ctx context.Context) error {
 
 	clientID := instanceAcct.ID
 	clientSecret := uuid.NewString()
-	appID, err := id.NewRandomULID()
-	if err != nil {
-		return err
-	}
 
 	// Generate the application
 	// to put in the database.
 	app := &gtsmodel.Application{
-		ID:           appID,
+		ID:           id.NewULID(),
 		Name:         host + " instance application",
 		Website:      url,
-		RedirectURI:  url,
+		RedirectURIs: []string{url},
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Scopes:       "write:accounts",
@@ -391,16 +387,7 @@ func (a *adminDB) CreateInstanceApplication(ctx context.Context) error {
 		return err
 	}
 
-	// Model an oauth client
-	// from the application.
-	oc := &gtsmodel.Client{
-		ID:     clientID,
-		Secret: clientSecret,
-		Domain: url,
-	}
-
-	// Store it.
-	return a.state.DB.PutClient(ctx, oc)
+	return nil
 }
 
 func (a *adminDB) GetInstanceApplication(ctx context.Context) (*gtsmodel.Application, error) {
